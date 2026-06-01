@@ -1,0 +1,13 @@
+---
+- name: Deploy Web Portfolio ke Container
+  hosts: webservers
+  gather_facts: false # Lewati pengecekan awal karena Python belum ada di Nginx
+
+  tasks:
+    - name: Menginstal Python3 di dalam Container Nginx
+      raw: apt-get update && apt-get install -y python3
+
+    - name: Copy file HTML ke dalam Nginx
+      copy:
+        src: ../web/
+        dest: /usr/share/nginx/html/
