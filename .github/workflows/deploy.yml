@@ -1,0 +1,25 @@
+name: Portfolio CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'web/**'
+      - 'infra/playbook.yml'
+
+jobs:
+  deploy-to-local-container:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Verify Ansible Installation
+        run: ansible --version
+
+      - name: Deploy Portfolio via Ansible
+        working-directory: ./infra
+        run: |
+          ansible-playbook -i inventory.ini playbook.yml
