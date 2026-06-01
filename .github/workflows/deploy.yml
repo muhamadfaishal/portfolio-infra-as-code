@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'web/**'
-      - 'infra/playbook.yml'
+      - 'infra/**' # Sekarang pipeline akan mendeteksi perubahan pada Terraform
 
 jobs:
   deploy-to-local-container:
@@ -16,10 +16,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Verify Ansible Installation
-        run: ansible --version
+      - name: Apply Infrastructure (Terraform)
+        working-directory: ./infra
+        run: |
+          terraform init
+          terraform apply -auto-approve
 
-      - name: Deploy Portfolio via Ansible
+      - name: Deploy Configuration (Ansible)
         working-directory: ./infra
         run: |
           ansible-playbook -i inventory.ini playbook.yml
