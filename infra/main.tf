@@ -16,18 +16,9 @@ provider "docker" {
 }
 
 resource "docker_image" "nginx" {
-  name         = "nginx:latest"
-  keep_locally = false
 }
 
 resource "docker_container" "portfolio_web" {
-  image = docker_image.nginx.image_id
-  name  = "portfolio-server-lokal"
-  restart = "always"
-  ports {
-    internal = 80
-    external = 8080
-  }
 }
 
 # --- MONITORING & OBSERVABILITY ---
