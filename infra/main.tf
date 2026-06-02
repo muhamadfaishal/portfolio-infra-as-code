@@ -15,12 +15,6 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-resource "docker_image" "nginx" {
-}
-
-resource "docker_container" "portfolio_web" {
-}
-
 # --- MONITORING & OBSERVABILITY ---
 
 # Mengunduh Image Monitoring
