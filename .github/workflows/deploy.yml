@@ -6,12 +6,29 @@ on:
       - main
     paths:
       - 'web/**'
-      - 'infra/**' # Sekarang pipeline akan mendeteksi perubahan pada Terraform
+      - 'infra/**'
 
 jobs:
-  deploy-to-local-container:
-    runs-on: self-hosted
+  # JOB 1: Keamanan
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
+      - name: Run Trivy Vulnerability Scanner (IaC)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './infra'
+          format: 'table'
+          exit-code: '0' 
+          severity: 'CRITICAL,HIGH'
+
+  # JOB 2: Eksekusi Infrastruktur 
+  deploy-to-local-container:
+    needs: security-scan 
+    runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
