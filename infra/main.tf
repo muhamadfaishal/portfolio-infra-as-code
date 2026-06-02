@@ -19,6 +19,7 @@ resource "docker_image" "nginx" {
 resource "docker_container" "portfolio_web" {
   image = docker_image.nginx.image_id
   name  = "portfolio-server-lokal"
+  restart = "always"
   ports {
     internal = 80
     external = 8080
@@ -46,6 +47,7 @@ resource "docker_container" "cadvisor" {
   image = docker_image.cadvisor.image_id
   name  = "portfolio-cadvisor"
   privileged = true
+  restart = "always"
   ports {
     internal = 8080
     external = 8081
@@ -78,6 +80,7 @@ resource "docker_container" "cadvisor" {
 resource "docker_container" "prometheus" {
   image = docker_image.prometheus.image_id
   name  = "portfolio-prometheus"
+  restart = "always"
   ports {
     internal = 9090
     external = 9090
@@ -94,6 +97,7 @@ resource "docker_container" "prometheus" {
 resource "docker_container" "grafana" {
   image = docker_image.grafana.image_id
   name  = "portfolio-grafana"
+  restart = "always"
   ports {
     internal = 3000
     external = 3000
