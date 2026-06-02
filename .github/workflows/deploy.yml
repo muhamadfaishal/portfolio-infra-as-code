@@ -34,7 +34,12 @@ jobs:
       - name: 1. Terraform - Membangun Satelit Database Eksternal
         working-directory: ./infra
         run: |
-          terraform init -reconfigure
+          # Hapus seluruh sisa memori dan brankas impostor di direktori ini
+          rm -rf .terraform
+          rm -f terraform.tfstate terraform.tfstate.backup
+          
+          # Inisialisasi dan jalankan murni menggunakan brankas aman
+          terraform init
           terraform apply -auto-approve
 
       - name: 2. Ansible - Mengeksekusi Kubernetes Manifests
