@@ -1,4 +1,8 @@
 terraform {
+  backend "local" {
+    path = "/home/quidz/terraform-safe-state/terraform.tfstate"
+  }
+  
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
