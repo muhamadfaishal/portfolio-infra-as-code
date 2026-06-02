@@ -26,20 +26,20 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
   # JOB 2: Eksekusi Infrastruktur 
-  deploy-to-local-container:
-    needs: security-scan 
+  deploy-to-local-cluster:
+    needs: security-scan
     runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Apply Infrastructure (Terraform)
-        working-directory: ./infra
+      - name: Deploy to K3d Kubernetes
         run: |
-          terraform init -force-copy
-          terraform apply -auto-approve
-
-      - name: Deploy Configuration (Ansible)
-        working-directory: ./infra
-        run: |
-          ansible-playbook -i inventory.ini playbook.yml
+          # 1. Ubah file HTML menjadi ConfigMap agar bisa disuntikkan ke K8s
+          kubectl create configmap portfolio-html-config --from-file=web/index.html -o yaml --dry-run=client | kubectl apply -f -
+          
+          # 2. Terapkan arsitektur K8s (Deployment & Service)
+          kubectl apply -f k8s/
+          
+          # 3. Pantau status peluncuran
+          kubectl rollout status deployment/portfolio-web
