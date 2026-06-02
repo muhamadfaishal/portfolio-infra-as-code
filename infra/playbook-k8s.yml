@@ -3,10 +3,13 @@
   hosts: localhost
   connection: local
   tasks:
-    - name: Mengemas File HTML menjadi Kubernetes ConfigMap
-      shell: kubectl create configmap portfolio-html-config --from-file=../web/index.html -o yaml --dry-run=client | kubectl apply -f -
-      
-    - name: Menerapkan Arsitektur K8s (Deployment & Service)
+    - name: Membangun Website menjadi Docker Image Kustom
+      shell: docker build -t portfolio-web:latest ../web/
+
+    - name: Menyuntikkan Image ke dalam Klaster K3d
+      shell: k3d image import portfolio-web:latest -c portfolio-cluster
+
+    - name: Menerapkan Arsitektur K8s (Deployment, Service, Ingress)
       command: kubectl apply -f ../k8s/
 
     - name: Memastikan Seluruh Pod Web Berjalan Stabil
