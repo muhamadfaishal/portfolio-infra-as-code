@@ -34,7 +34,8 @@ jobs:
       - name: 1. Terraform - Membangun Satelit Database Eksternal
         working-directory: ./infra
         run: |
-          terraform init
+          rm -rf .terraform
+          terraform init -input=false
           terraform apply -auto-approve
 
       - name: 2. Ansible - Mengeksekusi Kubernetes Manifests
