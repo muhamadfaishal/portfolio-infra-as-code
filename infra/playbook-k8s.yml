@@ -1,0 +1,13 @@
+---
+- name: Enterprise GitOps - Kubernetes Orchestration
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Mengemas File HTML menjadi Kubernetes ConfigMap
+      shell: kubectl create configmap portfolio-html-config --from-file=../web/index.html -o yaml --dry-run=client | kubectl apply -f -
+      
+    - name: Menerapkan Arsitektur K8s (Deployment & Service)
+      command: kubectl apply -f ../k8s/
+
+    - name: Memastikan Seluruh Pod Web Berjalan Stabil
+      command: kubectl rollout status deployment/portfolio-web

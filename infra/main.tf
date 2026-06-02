@@ -108,5 +108,25 @@ resource "docker_container" "grafana" {
   }
 }
 
-# Memicu ulang CI/CD untuk force-copy state
-# Memicu ulang CI/CD untuk force-copy state
+resource "docker_image" "postgres" {
+  name         = "postgres:15-alpine"
+  keep_locally = true
+}
+
+resource "docker_container" "portfolio_db" {
+  name    = "portfolio-database-satelit"
+  image   = docker_image.postgres.image_id
+  restart = "always"
+  
+  # Konfigurasi kredensial database
+  env = [
+    "POSTGRES_USER=admin",
+    "POSTGRES_PASSWORD=supersecret",
+    "POSTGRES_DB=portfoliodb"
+  ]
+  
+  ports {
+    internal = 5432
+    external = 5432
+  }
+}

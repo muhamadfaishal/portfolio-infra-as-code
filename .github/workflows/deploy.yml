@@ -25,21 +25,21 @@ jobs:
           exit-code: '0' 
           severity: 'CRITICAL,HIGH'
 
-  # JOB 2: Eksekusi Infrastruktur 
-  deploy-to-local-cluster:
+  # JOB 2: Eksekusi Hybrid (Terraform -> Ansible -> K8s)
+  deploy-hybrid-architecture:
     needs: security-scan
     runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Deploy to K3d Kubernetes
+      - name: 1. Terraform - Membangun Satelit Database Eksternal
+        working-directory: ./infra
         run: |
-          # 1. Ubah file HTML menjadi ConfigMap agar bisa disuntikkan ke K8s
-          kubectl create configmap portfolio-html-config --from-file=web/index.html -o yaml --dry-run=client | kubectl apply -f -
-          
-          # 2. Terapkan arsitektur K8s (Deployment & Service)
-          kubectl apply -f k8s/
-          
-          # 3. Pantau status peluncuran
-          kubectl rollout status deployment/portfolio-web
+          terraform init -force-copy
+          terraform apply -auto-approve
+
+      - name: 2. Ansible - Mengeksekusi Kubernetes Manifests
+        working-directory: ./infra
+        run: |
+          ansible-playbook playbook-k8s.yml
