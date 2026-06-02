@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'web/**'
-      - 'infra/**'
+  workflow_dispatch:
 
 jobs:
   # JOB 1: Keamanan
